@@ -47,10 +47,11 @@ def join(t1, t2, on_keys):
         (k1, k2) = on_keys
         try:
             r2 = next(r for r in t2 if r[k2] == r1[k1])
-        except StopIteration:
+        except (StopIteration, KeyError):
             r2 = {}
         r = r1.copy()
         r.update(r2)
         return r
 
     return map(join_record, t1)
+
