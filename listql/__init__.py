@@ -1,11 +1,13 @@
 from collections import defaultdict
 import logging
+import six
+from six.moves import reduce
 
 
 def select(records, keys):
     if not isinstance(keys, dict):
         keys = {k: k for k in keys}
-    return map(lambda r: {keys[k]: v for (k, v) in r.iteritems() if k in keys},
+    return map(lambda r: {keys[k]: v for (k, v) in six.iteritems(r) if k in keys},
                records)
 
 
@@ -47,11 +49,10 @@ def join(t1, t2, on_keys):
         (k1, k2) = on_keys
         try:
             r2 = next(r for r in t2 if r[k2] == r1[k1])
-        except (StopIteration, KeyError):
+        except StopIteration:
             r2 = {}
         r = r1.copy()
         r.update(r2)
         return r
 
     return map(join_record, t1)
-
